@@ -1,11 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunkMiddleware from 'redux-thunk'
+import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import rootReducer from './store/reducers/RootReducer';
+axios.defaults.baseURL = "https://api.dev.pastorsline.com/";
+
+const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
 
 ReactDOM.render(
-  <App/>,
+  <Provider store={store}><App/></Provider>,
   document.getElementById('root')
 );
 
