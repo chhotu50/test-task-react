@@ -8,8 +8,8 @@ const Home = () => {
     }
   return (
     <div className="modal-btn-wrap"> 
-      <Button variant="primary btnA" onClick={()=>handlePageChange('/buttonA')}>Button A</Button>
-      <Button variant="primary btnB" onClick={()=>handlePageChange('/buttonB')}>Button B</Button>
+      <Button className="btn btn-a mr-1" onClick={()=>handlePageChange('/button-a')}>Button A</Button>
+      <Button className="btn btn-b ml-1" onClick={()=>handlePageChange('/button-b')}>Button B</Button>
     </div>
   );
 };

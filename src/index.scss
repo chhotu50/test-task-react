@@ -2,24 +2,24 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
-
-    .btnA {
-        color: #46139f;
-    }
-
-    .btnB {
-        color: #ff7f50;
-    }
-
-    .btn {
-        margin: 0 5px;
-        background-color: #FFFFFF;
-    }
+    min-height: 100vh;   
 }
 
 .page-loader-content {
     text-align: center;
     padding: 80px;
     border-radius: 10px;
+}
+.btn-a {
+    background: #46139f;
+}
+
+.btn-b {
+    background: #ff7f50;
+}
+
+.btn-c {
+    border: 1px solid #46139f;
+    color: #000;
+    background: #fff;
 }

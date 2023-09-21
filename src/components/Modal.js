@@ -7,7 +7,7 @@ import { listContact, setContactDefaults } from "../../src/store/actions/Contact
 import ButtonC from "../components/ButtonC";
 import Loading from "../components/Loading";
 import './modal.scss';
-let CHANGE_TIMEOUT = null;
+let clearTime = null;
 const CustomModal = (props) => {
   const { defaultUrl } = props;
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ const CustomModal = (props) => {
   }, [props.contact]);
 
   /**
-   * navigate page if same page do not change the page
+   * If different URL found redirect page
    * @param {*} page 
    * @returns 
    */
@@ -59,10 +59,10 @@ const CustomModal = (props) => {
     setIsChecked(false);
     setQuery(value);
     if (value && value.length > 1) {
-      if (CHANGE_TIMEOUT) {
-        clearTimeout(CHANGE_TIMEOUT);
+      if (clearTime) {
+        clearTimeout(clearTime);
       }
-      CHANGE_TIMEOUT = setTimeout(() => {
+      clearTime = setTimeout(() => {
         props.listContact(`${defaultUrl}&page=${pageNo}&query=${value}`);
       }, 200);
     } else if (!value) {
@@ -107,7 +107,7 @@ const CustomModal = (props) => {
     <div>
       <Modal show={modalShowB} onHide={() => handleClose("/")} backdrop="static" keyboard={false} className="modal-wraper">
         <Modal.Header>
-          <Modal.Title>ButtonB</Modal.Title>
+          <Modal.Title>{pathname ==='/button-a'?'Button A':'Button B'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
             {props.contact.error_message?<Alert key={'danger'} variant={'danger'}>{props.contact.error_message}</Alert>:''}
@@ -140,13 +140,13 @@ const CustomModal = (props) => {
             {props.contact.list_spinner === true ? <Loading /> : ""}
           </Scrollbars>
           <div className="btn-container">
-            <Button variant="secondary" type="button" onClick={() => handleClose("/buttonA")} className="btnA">
+            <Button variant="secondary" type="button" onClick={() => handleClose("/button-a")} className="btn-a">
               All Contacts
             </Button>
-            <Button variant="secondary" type="button" className="ml-2 btnB" onClick={() => handleClose("/buttonB")}>
+            <Button variant="secondary" type="button" className="ml-2 btn-b" onClick={() => handleClose("/button-b")}>
               US Contacts
             </Button>
-            <Button variant="secondary" onClick={() => handleClose("/")} className="ml-2 btnC">
+            <Button variant="secondary" onClick={() => handleClose("/")} className="ml-2 btn-c">
               Close
             </Button>
           </div>
@@ -161,7 +161,7 @@ const CustomModal = (props) => {
           ""
         )}
         {contactData ? (
-          <Button variant="secondary" onClick={loadMore} className="m-4 btnC">
+          <Button variant="secondary" onClick={loadMore} className="m-4 btn-c">
             Load more
           </Button>
         ) : (

@@ -7,8 +7,8 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route index element={<Home />} />
-        <Route path="buttonA" element={<ButtonA />} />
-        <Route path="buttonB" element={<ButtonB />} />
+        <Route path="button-a" element={<ButtonA />} />
+        <Route path="button-b" element={<ButtonB />} />
       </Routes>
     </BrowserRouter>
   );

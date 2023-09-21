@@ -9,7 +9,7 @@ const ButtonC = (props) => {
     <div>
       <Modal show={modalShowC} onHide={handleClose} backdrop="static" keyboard={false}>
         <Modal.Header>
-          <Modal.Title>ButtonC</Modal.Title>
+          <Modal.Title>Button C</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p>ID : {data?.id}</p>
