@@ -3,18 +3,18 @@ import { Modal, Button, Form, Table } from "react-bootstrap";
 import { useState } from "react";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Scrollbars from "react-custom-scrollbars";
 import { listContact, setContactDefaults } from "../../src/store/actions/ContactActions";
 import ButtonC from "../components/ButtonC";
-
+import Loading from "../components/Loading";
+let CHANGE_TIMEOUT = null;
 const ButtonA = (props) => {
   const navigate = useNavigate();
   const [modalShowA, setModalShowA] = useState(true);
   const [modalShowC, setModalShowC] = useState(false);
-  const [contactData, conatctData] = useState({});
+  const [contactData, setConatctData] = useState([]);
   const [singleContact, setSingleContact] = useState({});
-  const [hasOnlyEven, setHasOnlyEven] = useState(false);
   const [query, setQuery] = useState("");
-  const [querySearch, setQuerySearch] = useState("");
   const [pageNo, setPageNo] = useState(1);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const ButtonA = (props) => {
   }, []);
 
   useEffect(() => {
-    conatctData(props.contact.contacts);
+    setConatctData(props.contact.contacts?.formatedContactData);
   }, [props.contact]);
 
   const handleClose = (page = "/") => {
@@ -36,17 +36,18 @@ const ButtonA = (props) => {
     setModalShowC(true);
   };
 
-  useEffect(() => {
-    const timeOutId = setTimeout(() => handleChange(query), 500);
-    return () => clearTimeout(timeOutId);
-  }, [query]);
-
-  const handleChange = (value) => {
-    if(!value){
-        return;
+  const handleSearchChange = (value) => {
+    setQuery(value);
+    if (value && value.length > 1) {
+      if (CHANGE_TIMEOUT) {
+        clearTimeout(CHANGE_TIMEOUT);
+      }
+      CHANGE_TIMEOUT = setTimeout(() => {
+        props.listContact(`?companyId=171&countryId=226&page=${pageNo}&query=${value}`);
+      }, 200);
+    } else {
+      props.listContact(`?companyId=171&countryId=226&page=${pageNo}`);
     }
-    setQuerySearch(value);
-    props.listContact(`?companyId=171&page=1&query=${value}`);
   };
 
   const loadMore = () => {
@@ -55,36 +56,46 @@ const ButtonA = (props) => {
     }
     let page = pageNo + 1;
     setPageNo(page);
-    if(querySearch){
-        props.listContact(`?companyId=171&countryId=226&page=${page}&query=${querySearch}`);
-    }else{
-        props.listContact(`?companyId=171&countryId=226&page=${page}`);
+    if (query) {
+      props.listContact(`?companyId=171&countryId=226&page=${page}&query=${query}`);
+    } else {
+      props.listContact(`?companyId=171&countryId=226&page=${page}`);
+    }
+  };
+
+  const handleEvenData = (event) => {
+    const { checked } = event.target;
+    const data = props.contact.contacts.formatedContactData;
+    if (checked) {
+      setConatctData(data.filter((e) => e.id % 2 === 0));
+    } else {
+      setConatctData(data);
     }
   };
 
   return (
     <div>
       <Modal show={modalShowA} onHide={() => handleClose("/")} backdrop="static" keyboard={false} className="modal-wraper">
-        <Modal.Header closeButton>
+        {props.contact.list_spinner === true ? <Loading /> : ""}
+        <Modal.Header>
           <Modal.Title>ButtonA</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {contactData?.contacts ? <input type="text" placeholder="Enter query" className="form-control" onChange={(event) => setQuery(event.target.value)} value={query}/> : ""}
-          <Table striped bordered hover size="sm" className="mt-4">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-              </tr>
-            </thead>
-            <tbody>
-              {contactData?.contacts &&
-                Object.keys(contactData?.contacts).length !== 0 &&
-                Object.keys(contactData.contacts).map((key, index) => {
-                  const contact = contactData.contacts[key];
-                  if (contact.id % 2 === 0 && hasOnlyEven === true) {
+          {contactData ? <input type="text" placeholder="Enter query" className="form-control" onChange={(event) => handleSearchChange(event.target.value)} value={query} /> : ""}
+          <Scrollbars style={{ width: 470, height: contactData ? 350 : 100 }}>
+            <Table striped bordered hover size="sm" className="mt-4">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                {contactData &&
+                  contactData.length !== 0 &&
+                  contactData.map((contact, index) => {
                     return (
                       <tr key={index} onClick={() => handleContactView(contact)}>
                         <td>{contact.id}</td>
@@ -93,20 +104,10 @@ const ButtonA = (props) => {
                         <td>{contact?.email}</td>
                       </tr>
                     );
-                  } else if (!hasOnlyEven) {
-                    return (
-                      <tr key={index} onClick={() => handleContactView(contact)}>
-                        <td>{contact.id}</td>
-                        <td>{contact?.first_name}</td>
-                        <td>{contact?.last_name}</td>
-                        <td>{contact?.email}</td>
-                      </tr>
-                    );
-                  }
-                })}
-            </tbody>
-          </Table>
-
+                  })}
+              </tbody>
+            </Table>
+          </Scrollbars>
           <Button variant="secondary" type="button" className="btnA">
             All Contacts
           </Button>
@@ -117,18 +118,22 @@ const ButtonA = (props) => {
             Close
           </Button>
         </Modal.Body>
-        {contactData?.contacts ? (
+        {contactData ? (
           <Modal.Footer>
             <Form.Group id="formGridCheckbox">
-              <Form.Check type="checkbox" label="Only even" onChange={(event) => setHasOnlyEven(event.target.checked)} />
+              <Form.Check type="checkbox" label="Only even" onChange={handleEvenData} />
             </Form.Group>
           </Modal.Footer>
         ) : (
           ""
         )}
-        {contactData?.contacts ?  <Button variant="secondary" onClick={loadMore} className="m-4 btnC">
-          Load more
-        </Button>:''}
+        {contactData ? (
+          <Button variant="secondary" onClick={loadMore} className="m-4 btnC">
+            Load more
+          </Button>
+        ) : (
+          ""
+        )}
       </Modal>
       <ButtonC modalShowC={modalShowC} setModalShowC={setModalShowC} data={singleContact} />
     </div>

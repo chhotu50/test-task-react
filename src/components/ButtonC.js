@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Modal, Button } from "react-bootstrap";
 const ButtonC = (props) => {
   const { modalShowC, setModalShowC,data } = props;
@@ -8,7 +8,7 @@ const ButtonC = (props) => {
   return (
     <div>
       <Modal show={modalShowC} onHide={handleClose} backdrop="static" keyboard={false}>
-        <Modal.Header closeButton>
+        <Modal.Header>
           <Modal.Title>ButtonC</Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -27,4 +27,4 @@ const ButtonC = (props) => {
   );
 };
 
-export default ButtonC;
+export default memo(ButtonC);

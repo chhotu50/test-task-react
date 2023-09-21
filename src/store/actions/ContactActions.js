@@ -20,6 +20,10 @@ function listContact(params) {
     });
     Contact.list(params)
       .then((response) => {
+        const data = response.data.contacts;
+        if(data && Object.keys(data).length !== 0){
+          response.data['formatedContactData'] = Object.keys(data).map((key) => data[key]);
+        }
         dispatch({
           type: LIST_CONTACTS_SUCCESS,
           data: response.data,
