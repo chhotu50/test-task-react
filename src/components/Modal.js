@@ -13,10 +13,10 @@ const CustomModal = (props) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [modalShowB, setModalShowB] = useState(true);
-  const [singleContact, setSingleContact] = useState({});
-  const [contactData, setConatctData] = useState([]);
+  const [singleContact, setContact] = useState({});
+  const [contacts, setConatcts] = useState([]);
   const [modalShowC, setModalShowC] = useState(false);
-  const [query, setQuery] = useState("");
+  const [inputQuery, setInputQuery] = useState("");
   const [pageNo, setPageNo] = useState(1);
   const [isChecked, setIsChecked] = useState(false);
 
@@ -26,7 +26,7 @@ const CustomModal = (props) => {
   }, []);
 
   useEffect(() => {
-    setConatctData(props.contact.contacts?.formatedContactData);
+    setConatcts(props.contact.contacts?.formatedContactData);
   }, [props.contact]);
 
   /**
@@ -47,7 +47,7 @@ const CustomModal = (props) => {
    * @param {*} item 
    */
   const handleContactView = (item) => {
-    setSingleContact(item);
+    setContact(item);
     setModalShowC(true);
   };
 
@@ -57,7 +57,7 @@ const CustomModal = (props) => {
    */
   const handleSearchChange = (value) => {
     setIsChecked(false);
-    setQuery(value);
+    setInputQuery(value);
     if (value && value.length > 1) {
       if (clearTime) {
         clearTimeout(clearTime);
@@ -80,8 +80,8 @@ const CustomModal = (props) => {
     }
     let page = pageNo + 1;
     setPageNo(page);
-    if (query) {
-      props.listContact(`${defaultUrl}&page=${page}&query=${query}`);
+    if (inputQuery) {
+      props.listContact(`${defaultUrl}&page=${page}&query=${inputQuery}`);
     } else {
       props.listContact(`${defaultUrl}&page=${page}`);
     }
@@ -97,9 +97,9 @@ const CustomModal = (props) => {
     setIsChecked(checked);
     const data = props.contact.contacts.formatedContactData;
     if (checked) {
-      setConatctData(data.filter((e) => e.id % 2 === 0));
+      setConatcts(data.filter((e) => e.id % 2 === 0));
     } else {
-      setConatctData(data);
+      setConatcts(data);
     }
   };
 
@@ -111,21 +111,24 @@ const CustomModal = (props) => {
         </Modal.Header>
         <Modal.Body>
             {props.contact.error_message?<Alert key={'danger'} variant={'danger'}>{props.contact.error_message}</Alert>:''}
-          {contactData ? <input placeholder="Enter query" className="form-control" onChange={(event) => handleSearchChange(event.target.value)} value={query} /> : ""}
+          {contacts ? <input placeholder="Enter query" className="form-control" onChange={(event) => handleSearchChange(event.target.value)} value={inputQuery} /> : ""}
           <Scrollbars style={{ width: 470, height: 350 }}>
             <Table striped bordered hover size="sm" className="mt-4">
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>First Name</th>
-                  <th>Last Name</th>
+                  <th>First name</th>
+                  <th>Last name</th>
                   <th>Email</th>
                 </tr>
               </thead>
               <tbody>
-                {contactData &&
-                  contactData.length !== 0 &&
-                  contactData.map((contact, index) => {
+              { props.contact.list_spinner===false && (contacts?.length === 0 || contacts?.length === undefined) ? <tr>
+                  <td colSpan={4} className="text-center">No contacts found</td>
+                </tr>:''}
+                {contacts &&
+                  contacts.length !== 0 &&
+                  contacts.map((contact, index) => {
                     return (
                       <tr key={index} onClick={() => handleContactView(contact)}>
                         <td>{contact.id}</td>
@@ -151,7 +154,7 @@ const CustomModal = (props) => {
             </Button>
           </div>
         </Modal.Body>
-        {contactData ? (
+        {contacts ? (
           <Modal.Footer>
             <Form.Group id="formGridCheckbox">
               <Form.Check type="checkbox" label="Only even" onChange={handleEvenData} checked={isChecked} />
@@ -160,7 +163,7 @@ const CustomModal = (props) => {
         ) : (
           ""
         )}
-        {contactData ? (
+        {contacts ? (
           <Button variant="secondary" onClick={loadMore} className="m-4 btn-c">
             Load more
           </Button>
