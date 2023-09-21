@@ -38,7 +38,7 @@ function listContact(params) {
         } else {
           dispatch({
             type: LIST_CONTACTS_FAILURE,
-            error: "Error",
+            error: error?.message?error?.message:'Something went wrong',
           });
         }
       });
