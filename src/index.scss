@@ -14,41 +14,7 @@
 
     .btn {
         margin: 0 5px;
-    }
-}
-
-.modal-wraper {
-    .btnA {
-        color: #46139f;
         background-color: #FFFFFF;
-    }
-
-    .btnB {
-        color: #ff7f50;
-        background-color: #FFFFFF;
-    }
-
-    .btnC {
-        background-color: #FFFFFF;
-        border: 1px solid #46139f;
-        color: #000;
-    }
-
-    table {
-        tbody {
-            tr {
-                cursor: pointer;
-            }
-        }
-
-    }
-
-    .btn-container {
-        justify-content: center;
-        display: flex;
-    }
-    p{
-        color: #ff7f50;
     }
 }
 

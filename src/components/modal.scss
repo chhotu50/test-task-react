@@ -1,0 +1,32 @@
+.modal-wraper {
+    .btn {
+        background-color: #FFFFFF;
+    }
+
+    .btnA {
+        color: #46139f;
+    }
+
+    .btnB {
+        color: #ff7f50;
+    }
+
+    .btnC {
+        border: 1px solid #46139f;
+        color: #000;
+    }
+
+    table {
+        tbody {
+            tr {
+                cursor: pointer;
+            }
+        }
+
+    }
+
+    .btn-container {
+        justify-content: center;
+        display: flex;
+    }
+}

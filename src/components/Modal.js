@@ -6,6 +6,7 @@ import { Scrollbars } from "react-custom-scrollbars";
 import { listContact, setContactDefaults } from "../../src/store/actions/ContactActions";
 import ButtonC from "../components/ButtonC";
 import Loading from "../components/Loading";
+import './modal.scss';
 let CHANGE_TIMEOUT = null;
 const CustomModal = (props) => {
   const { defaultUrl } = props;
@@ -28,6 +29,11 @@ const CustomModal = (props) => {
     setConatctData(props.contact.contacts?.formatedContactData);
   }, [props.contact]);
 
+  /**
+   * navigate page if same page do not change the page
+   * @param {*} page 
+   * @returns 
+   */
   const handleClose = (page = "/") => {
     if (pathname === page) {
       return;
@@ -36,11 +42,19 @@ const CustomModal = (props) => {
     navigate(page);
   };
 
+  /**
+   * View contact detail
+   * @param {*} item 
+   */
   const handleContactView = (item) => {
     setSingleContact(item);
     setModalShowC(true);
   };
 
+  /**
+   * Search query
+   * @param {*} value 
+   */
   const handleSearchChange = (value) => {
     setIsChecked(false);
     setQuery(value);
@@ -55,7 +69,10 @@ const CustomModal = (props) => {
       props.listContact(`${defaultUrl}&page=${pageNo}`);
     }
   };
-
+/**
+ * Load more contact
+ * @returns 
+ */
   const loadMore = () => {
     setIsChecked(false);
     if (props.contact.list_spinner) {
@@ -70,6 +87,11 @@ const CustomModal = (props) => {
     }
   };
 
+  /**
+   * Event contact get  (ID based)
+   * @param {*} event 
+   * get contact
+   */
   const handleEvenData = (event) => {
     const { checked } = event.target;
     setIsChecked(checked);
